@@ -29,7 +29,7 @@ function testFail(text, expectedResult, additionalOptions) {
 }
 
 describe("acorn-parse-regexps", function () {
-  testFail("/^/uu", "Duplicate flag in regular expression (1:0)")
+  testFail("/^/uu", "Duplicate regular expression flag (1:4)")
   test("/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/u")
   test("/^(?<half>.*).\\k<half>$/u")
   test("/(?<!.)/")
@@ -70,4 +70,6 @@ describe("acorn-parse-regexps", function () {
   // Backslash is not allowed as ID_Start and ID_Continue
   testFail("/(?<\\>.)/u", "Error parsing regular expression: Invalid escape sequence (1:3)")
   testFail("/(?<a\\>.)/u", "Error parsing regular expression: Invalid escape sequence (1:4)")
+
+  testFail("/a/\u{10509}", "Unexpected token (1:3)")
 })

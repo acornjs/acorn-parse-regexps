@@ -5,6 +5,7 @@ const lineBreak = /\r\n?|\n|\u2028|\u2029/
 
 module.exports = function (acorn) {
   const tt = acorn.tokTypes
+  const isIdentifierChar = acorn.isIdentifierChar
 
   acorn.plugins.parseRegexps = function (instance, config) {
     instance.extend("readRegexp", _superF => function () {
@@ -23,22 +24,19 @@ module.exports = function (acorn) {
       }
       let content = this.input.slice(start, this.pos)
       ++this.pos
-      // Need to use `readWord1` because '\uXXXX' sequences are allowed
-      // here (don't ask).
-      let mods = this.readWord1()
-      if (mods) {
-        let validFlags = /^[gim]*$/
-        if (this.options.ecmaVersion >= 6) validFlags = /^[gimuy]*$/
-        if (this.options.ecmaVersion >= 9) validFlags = /^[gimsuy]*$/
-        if (!validFlags.test(mods)) this.raise(start, "Invalid regular expression flag")
-      }
 
-      // Check for duplicate flags
-      const flags = Object.create(null)
-      for (let i = 0; i < mods.length; ++i) {
-        if (flags[mods[i]]) this.raise(this.start, "Duplicate flag in regular expression")
-        else flags[mods[i]] = true
+      let mods = "", flagsStart = this.pos, allowedFlags
+      if (this.options.ecmaVersion >= 9) allowedFlags = {g: true, i: true, m: true, s: true, u: true, y: true}
+      else if (this.options.ecmaVersion >= 6) allowedFlags = {g: true, i: true, m: true, u: true, y: true}
+      else allowedFlags = {g: true, i: true, m: true}
+      for (; this.pos < this.input.length; ++this.pos) {
+        let ch = this.input[this.pos]
+        if (!isIdentifierChar(ch.charCodeAt(0))) break // Doesn't correctly handle astral plane chars
+        if (!allowedFlags[ch])
+          this.raise(this.pos, (allowedFlags[ch] === false ? "Duplicate" : "Invalid") + " regular expression flag")
+        allowedFlags[ch] = false
       }
+      mods = this.input.slice(flagsStart, this.pos)
 
       try {
         regjsparser.parse(content, mods, {
