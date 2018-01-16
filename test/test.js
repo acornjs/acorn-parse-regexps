@@ -4,7 +4,7 @@ const assert = require("assert")
 const acorn = require("..")
 
 function parse(text, additionalOptions) {
-  return acorn.parse(text, Object.assign({ ecmaVersion: 9, plugins: { parseRegexps: { lookbehind: true } } }, additionalOptions))
+  return acorn.parse(text, Object.assign({ ecmaVersion: 9, plugins: { parseRegexps: true } }, additionalOptions))
 }
 
 function test(text, expectedResult, additionalOptions) {
@@ -35,6 +35,7 @@ describe("acorn-parse-regexps", function () {
   test("/(?<!.)/")
   test("/(?<=\\1(.))/")
   test("/(?<=(\\d+)(\\d+))$/")
+  test("/\\p{Script=Greek}/u")
 
   testFail("/a/\u{10509}", "Invalid regular expression flag (1:1)")
   testFail("/\\u{110000}/u", "Error parsing regular expression: Invalid escape sequence (1:1)")
@@ -75,6 +76,4 @@ describe("acorn-parse-regexps", function () {
   // Backslash is not allowed as ID_Start and ID_Continue
   testFail("/(?<\\>.)/u", "Error parsing regular expression: Invalid escape sequence (1:3)")
   testFail("/(?<a\\>.)/u", "Error parsing regular expression: Invalid escape sequence (1:4)")
-
-  testFail("/a/\u{10509}", "Unexpected token (1:3)")
 })

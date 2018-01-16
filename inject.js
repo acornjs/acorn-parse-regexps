@@ -40,10 +40,10 @@ module.exports = function (acorn) {
       }
 
       try {
-        regjsparser.parse(content, mods, {
-          unicodePropertyEscape: this.options.ecmaVersion >= 6,
-          namedGroups: this.options.ecmaVersion >= 9,
-          lookbehind: this.options.ecmaVersion >= 9 && config.lookbehind
+        regjsparser.parse(content, mods, this.options.ecmaVersion >= 9 && {
+          lookbehind: true,
+          namedGroups: true,
+          unicodePropertyEscape: true
         })
       } catch (e) {
         const matched = e.message.match(/^(.*) at position (\d+)/)

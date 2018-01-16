@@ -24,7 +24,7 @@ const implementedFeatures = [
 ]
 
 run(
-  (content, options) => parse(content, {sourceType: options.sourceType, ecmaVersion: 9, plugins: { parseRegexps: { lookbehind: true } }}),
+  (content, options) => parse(content, {sourceType: options.sourceType, ecmaVersion: 9, plugins: { parseRegexps: true }}),
   {
     testsDirectory: path.dirname(require.resolve("test262/package.json")),
     skip: test => (!test.attrs.features || !implementedFeatures.some(f => test.attrs.features.includes(f)) || unsupportedFeatures.some(f => test.attrs.features.includes(f))),
