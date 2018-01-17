@@ -36,6 +36,11 @@ describe("acorn-parse-regexps", function () {
   test("/(?<=\\1(.))/")
   test("/(?<=(\\d+)(\\d+))$/")
 
+  testFail("/a/\u{10509}", "Unexpected token (1:3)")
+  testFail("/\\u{110000}/u", "Error parsing regular expression: Invalid escape sequence (1:1)")
+
+  // These are from test262:
+  // https://github.com/tc39/test262/blob/master/test/built-ins/RegExp/named-groups/unicode-property-names.js
   test("/(?<π>a)/u")
   test("/(?<\\u{03C0}>a)/u")
   test("/(?<π>a)/u")
