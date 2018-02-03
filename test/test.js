@@ -29,14 +29,14 @@ function testFail(text, expectedResult, additionalOptions) {
 }
 
 describe("acorn-parse-regexps", function () {
-  testFail("/^/uu", "Duplicate regular expression flag (1:4)")
+  testFail("/^/uu", "Duplicate regular expression flag (1:1)")
   test("/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/u")
   test("/^(?<half>.*).\\k<half>$/u")
   test("/(?<!.)/")
   test("/(?<=\\1(.))/")
   test("/(?<=(\\d+)(\\d+))$/")
 
-  testFail("/a/\u{10509}", "Unexpected token (1:3)")
+  testFail("/a/\u{10509}", "Invalid regular expression flag (1:1)")
   testFail("/\\u{110000}/u", "Error parsing regular expression: Invalid escape sequence (1:1)")
 
   // These are from test262:
