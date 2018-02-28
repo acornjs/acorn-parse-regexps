@@ -22,7 +22,7 @@
     "acorn": "^5.4.1",
     "regjsparser": "git+https://github.com/jviereck/regjsparser.git#00f49a179006610a8df81ddd6b3995c632c59c06"
   },
-  "version": "0.2.0",
+  "version": "0.2.1",
   "devDependencies": {
     "eslint": "^4.13.1",
     "eslint-plugin-node": "^6.0.0",
